@@ -12,17 +12,22 @@ async function handleRegister(req: Request, res: Response) {
             user: {
                 _id: registeredUser._id,
                 type: registeredUser.type,
-                firstNname: registeredUser.firstName,
-                lastName: registeredUser.lastName,
+                firstname: registeredUser.firstname,
+                lastname: registeredUser.lastname,
                 email: registeredUser.email
             } 
         })
     }catch(err: any) {
-        res.status(500).json({
-            message: "Unable to register at this time",
-            err: err.message
-        })
+        if(err.message.includes("E11000 duplicate key error collection:")){
+            res.status(409).json({ message: "User with email already exists", err: err.message })
+        } else {
+            res.status(500).json({
+                message: "Unable to register at this time",
+                err: err.message
+            })
+        } 
     }
 } 
 
 export default { handleRegister }
+

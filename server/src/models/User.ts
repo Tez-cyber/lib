@@ -1,7 +1,7 @@
 export interface IUser {
-    type: "ADMIN" | "EMPLOYEE" | "PATREON",
-    firstName: string
-    lastName: string
+    type: "ADMIN" | "EMPLOYEE" | "PATRON"
+    firstname: string
+    lastname: string
     email: string
     password: string
 }

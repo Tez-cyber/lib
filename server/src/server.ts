@@ -10,14 +10,18 @@ const PORT = config.server.port
 
 const app: Express = express()
 
-//-------Middleware
+//-------Middleware 
 app.use(express.json())
 app.use(cors());
 
 (async function startUp() {
     try {
         //-------CONNECTING TO DB
-        await mongoose.connect(config.mongo.url)
+        await mongoose.connect(config.mongo.url, {
+            w: "majority",
+            retryWrites: true,
+            authMechanism: "DEFAULT"
+        })
         console.log("Database connected successfully....")
 
         //-------ROUTES

@@ -21,14 +21,18 @@ const routes_1 = require("./routes");
 dotenv_1.default.config();
 const PORT = config_1.config.server.port;
 const app = (0, express_1.default)();
-//-------Middleware
+//-------Middleware 
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 (function startUp() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             //-------CONNECTING TO DB
-            yield mongoose_1.default.connect(config_1.config.mongo.url);
+            yield mongoose_1.default.connect(config_1.config.mongo.url, {
+                w: "majority",
+                retryWrites: true,
+                authMechanism: "DEFAULT"
+            });
             console.log("Database connected successfully....");
             //-------ROUTES
             (0, routes_1.registerRoutes)(app);

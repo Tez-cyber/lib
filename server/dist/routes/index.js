@@ -9,6 +9,6 @@ function registerRoutes(app) {
     app.get("/health", (req, res) => {
         res.status(200).json({ message: "Server is running properly" });
     });
-    app.use("/api", AuthRoutes_1.default);
+    app.use("/auth", AuthRoutes_1.default);
 }
 exports.registerRoutes = registerRoutes;

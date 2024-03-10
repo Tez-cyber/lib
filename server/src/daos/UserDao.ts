@@ -3,7 +3,7 @@ import { IUser } from "../models/User";
 
 export interface IUserModel extends IUser, Document{};
 
-const UserSchema = new Schema  (
+const UserSchema: Schema = new Schema  (
     {
         type: { type: String, required: true },
         firstname: {type: String, required: true},

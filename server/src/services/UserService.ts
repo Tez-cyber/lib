@@ -1,16 +1,16 @@
 import bcrypt from "bcrypt"
-
 import { config } from "../config"
-
-import UserDaos, {IUserModel} from "../daos/UserDaos"
+import User, {IUserModel} from "../daos/UserDao" 
 import { IUser } from "../models/User"
+import { UnableToSaveUserError } from "../utils/LibraryErrors"
 
 export async function register(user: IUser): Promise<IUserModel> {
     const ROUNDS = config.server.rounds
 
     try {
-        const hashedPassword = await bcrypt.hash(user.password, ROUNDS)
-        const saved = new UserDaos({
+        const salt = await bcrypt.genSalt(ROUNDS)
+        const hashedPassword = await bcrypt.hash(user.password, salt)
+        const saved = new User({
             ...user, 
             password: hashedPassword
         })
@@ -18,6 +18,6 @@ export async function register(user: IUser): Promise<IUserModel> {
         return saveUser
 
     }catch(err: any) {
-        throw new Error("Unable to create user at this time")
+        throw new UnableToSaveUserError(err.message)
     }
 }

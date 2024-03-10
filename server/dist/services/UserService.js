@@ -15,18 +15,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.register = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const config_1 = require("../config");
-const UserDaos_1 = __importDefault(require("../daos/UserDaos"));
+const UserDao_1 = __importDefault(require("../daos/UserDao"));
+const LibraryErrors_1 = require("../utils/LibraryErrors");
 function register(user) {
     return __awaiter(this, void 0, void 0, function* () {
         const ROUNDS = config_1.config.server.rounds;
         try {
-            const hashedPassword = yield bcrypt_1.default.hash(user.password, ROUNDS);
-            const saved = new UserDaos_1.default(Object.assign(Object.assign({}, user), { password: hashedPassword }));
+            const salt = yield bcrypt_1.default.genSalt(ROUNDS);
+            const hashedPassword = yield bcrypt_1.default.hash(user.password, salt);
+            const saved = new UserDao_1.default(Object.assign(Object.assign({}, user), { password: hashedPassword }));
             const saveUser = yield saved.save();
             return saveUser;
         }
         catch (err) {
-            throw new Error("Unable to create user at this time");
+            throw new LibraryErrors_1.UnableToSaveUserError(err.message);
         }
     });
 }
