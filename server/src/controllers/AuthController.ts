@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { register } from "../services/UserService";
+import { login, register } from "../services/UserService";
 import { IUser } from "../models/User";
+import { IUserModel } from "../daos/UserDao";
 
 async function handleRegister(req: Request, res: Response) {
     const user: IUser = req.body
@@ -29,5 +30,26 @@ async function handleRegister(req: Request, res: Response) {
     }
 } 
 
-export default { handleRegister }
+async function handleLogin (req: Request, res: Response) {
+    const credentials = req.body
+    try {
+        const loggedIn:IUserModel = await login(credentials)
+        res.status(201).json({
+            message: "User logged in successfully ",
+            user: {
+                _id: loggedIn._id,
+                type: loggedIn.type,
+                firstname: loggedIn.firstname,
+                lastname: loggedIn.lastname,
+                email: loggedIn.email
+            } 
+        })
+    }catch(err: any) {
+        res.status(500).json({
+            message: "Unable to login user at this time",
+            err: err.message
+        })
+    }
+}
+export default { handleRegister, handleLogin }
 

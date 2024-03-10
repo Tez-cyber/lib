@@ -8,4 +8,5 @@ const AuthController_1 = __importDefault(require("../controllers/AuthController"
 const validation_1 = require("../middlewares/validation");
 const router = express_1.default.Router();
 router.post("/register", (0, validation_1.ValidateSchema)(validation_1.Schemas.user.create), AuthController_1.default.handleRegister);
+router.post("/login", AuthController_1.default.handleLogin);
 exports.default = router;

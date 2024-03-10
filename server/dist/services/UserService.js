@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.register = void 0;
+exports.login = exports.register = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const config_1 = require("../config");
 const UserDao_1 = __importDefault(require("../daos/UserDao"));
@@ -33,3 +33,27 @@ function register(user) {
     });
 }
 exports.register = register;
+function login(credentials) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { email, password } = credentials;
+        try {
+            const user = yield UserDao_1.default.findOne({ email });
+            if (!user) {
+                throw new Error("Invalid Username and password");
+            }
+            else {
+                const validPassword = yield bcrypt_1.default.compare(password, user.password);
+                if (validPassword) {
+                    return user;
+                }
+                else {
+                    throw new Error("Invalid username and password");
+                }
+            }
+        }
+        catch (err) {
+            throw new Error(err.message);
+        }
+    });
+}
+exports.login = login;
