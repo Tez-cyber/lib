@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const UserService_1 = require("../services/UserService");
+const LibraryErrors_1 = require("../utils/LibraryErrors");
 function handleRegister(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const user = req.body;
@@ -56,10 +57,18 @@ function handleLogin(req, res) {
             });
         }
         catch (err) {
-            res.status(500).json({
-                message: "Unable to login user at this time",
-                err: err.message
-            });
+            if (err instanceof LibraryErrors_1.InvalidUsernameOrPassword) {
+                res.status(401).json({
+                    message: "Unable to login user at this time",
+                    err: err.message
+                });
+            }
+            else {
+                res.status(500).json({
+                    message: "Unable to login user at this time",
+                    err: err.message
+                });
+            }
         }
     });
 }

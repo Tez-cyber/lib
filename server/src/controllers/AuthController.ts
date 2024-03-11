@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { login, register } from "../services/UserService";
 import { IUser } from "../models/User";
 import { IUserModel } from "../daos/UserDao";
+import { InvalidUsernameOrPassword } from "../utils/LibraryErrors";
 
 async function handleRegister(req: Request, res: Response) {
     const user: IUser = req.body
@@ -45,10 +46,17 @@ async function handleLogin (req: Request, res: Response) {
             } 
         })
     }catch(err: any) {
-        res.status(500).json({
-            message: "Unable to login user at this time",
-            err: err.message
-        })
+        if(err instanceof InvalidUsernameOrPassword) {
+            res.status(401).json({
+                message: "Unable to login user at this time",
+                err: err.message
+            })
+        }else {
+            res.status(500).json({
+                message: "Unable to login user at this time",
+                err: err.message
+            })
+        }
     }
 }
 export default { handleRegister, handleLogin }
